@@ -5,6 +5,7 @@ import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,13 @@ public class MainService extends HibernateDaoSupport {
 			crtria = session.createCriteria(Dvsn.class)
 			.setFirstResult(Integer.parseInt(paramMap.get("startNum").toString()))
 			.setMaxResults(Integer.parseInt(paramMap.get("endNum").toString()));
+			
+			if(paramMap.get("sord").equals("desc")) {
+				crtria.addOrder(Order.asc(paramMap.get("sidx").toString()));				
+			} else {
+				crtria.addOrder(Order.desc(paramMap.get("sidx").toString()));
+			}
+			
 			dvsn = (ArrayList<Dvsn>) crtria.list();	
 		} finally {
 			session.close();	
