@@ -142,12 +142,16 @@ public class MainController {
 	@RequestMapping(value="/getDvsnList")
 	public @ResponseBody String getDvsnList(
 			@RequestParam("page") String page,
-			@RequestParam("rows") String rows
+			@RequestParam("rows") String rows,
+			@RequestParam("sidx") String sidx,
+			@RequestParam("sord") String sord
 			) {
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("page", page);
 		paramMap.put("rows", rows);
+		paramMap.put("sidx", sidx);
+		paramMap.put("sord", sord);
 		
 		Grivo grivo =  mainService.getDvsnList(paramMap);
 		
