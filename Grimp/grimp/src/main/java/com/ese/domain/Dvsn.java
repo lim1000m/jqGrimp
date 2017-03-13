@@ -1,6 +1,7 @@
 package com.ese.domain; 
 
 import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -8,7 +9,6 @@ import javax.persistence.Transient;
 import c.e.g.annotation.Grider;
 import c.e.g.annotation.Grider.Align;
 import c.e.g.annotation.Grider.Format;
-import c.e.g.annotation.Grider.Sort;
 import c.e.g.annotation.config.Gid;
 
 /**
@@ -28,7 +28,7 @@ import c.e.g.annotation.config.Gid;
 public class Dvsn {
 
 	@Transient
-	@Grider(label="com.ese.customCheck",align=Align.center, sort=Sort.none,format=Format.customCheckbox,hidden=false, width="10")
+	@Grider(label="com.ese.customCheck",align=Align.center, sort=true,format=Format.customCheckbox,hidden=false, width="10")
 	private int checkCustom;
 	
 	@Transient
@@ -46,7 +46,7 @@ public class Dvsn {
 	private String dvsnCd = "";
 
 	@Column(name="DVSN_NM", nullable=true, length=50)
-	@Grider(label="com.ese.dvsnNm", sort=Sort.desc, width="30")
+	@Grider(label="com.ese.dvsnNm", sort=true, width="30")
 	private String dvsnNm = "";
 
 	@Column(name="STD_DVSN_CD", nullable=true, length=1)
@@ -64,10 +64,24 @@ public class Dvsn {
 	@Column(name="ORDR", nullable=true, length=1)
 	@Grider(label="com.ese.ordr", format=Format.function, width="60")
 	private int ordr;
+
+	@Column(name="DATE_TIME", nullable=true, length=22)
+	@Grider(label="com.ese.date", dateExp={"yyyymmddhhmmss","yyyy-mm-dd hh:mm:ss"}, width="30")
+	private String dateTime;
 	
 	@Transient
 	private String extra;
 	
+	
+	
+	public String getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
+	}
+
 	public int getCheckCustom() {
 		return checkCustom;
 	}
