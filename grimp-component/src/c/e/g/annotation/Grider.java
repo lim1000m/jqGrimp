@@ -18,8 +18,12 @@ import java.lang.annotation.Target;
 public @interface Grider {
 	
 	public enum Align {left, center, right};
-	public enum Format {money, function, checkbox, radio, text, customCheckbox};
-	public enum Sort {desc, asc, none};
+	public enum Format {
+		function, 
+		checkbox, 
+		text, 
+		customCheckbox
+	};
 	
 	/**
 	 * @Method Name : label
@@ -81,7 +85,18 @@ public @interface Grider {
 	 * @param : 
 	 * @return : Sort
 	 */
-	Sort sort() default Sort.none;
+	boolean sort() default false;
+	
+	/**
+	 * @Method Name : dateExp()
+	 * @create Date : 2017. 3. 13.
+	 * @made by : "GOEDOKID"
+	 * @explain :  입력된 데이터 포맷 형태로 변환
+	 * 			  default ""
+	 * @param : 
+	 * @return : String
+	 */
+	String[] dateExp() default {}; 
 	
 	/**
 	 * @Method Name : editor

@@ -1,7 +1,7 @@
 package c.e.g.grimp;
 
 import java.lang.reflect.Field;
-
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -12,7 +12,6 @@ import org.springframework.web.context.WebApplicationContext;
 import c.e.g.annotation.Gentity;
 import c.e.g.annotation.Grider;
 import c.e.g.annotation.Grider.Format;
-import c.e.g.annotation.Grider.Sort;
 import c.e.g.annotation.config.Gid;
 import c.e.g.domain.Grivo;
 import c.e.g.exception.GrimpExceptionHandler;
@@ -255,6 +254,12 @@ public class Grimp extends GrimpUtil {
 			throw new GrimpExceptionHandler(GrimpError.NSFE, e);
 		} catch (NullPointerException e) {
 			throw new GrimpExceptionHandler(GrimpError.NPE, e);
+		} catch (IllegalArgumentException e) {
+			throw new GrimpExceptionHandler(GrimpError.IARE, e);
+		} catch (SecurityException e) {
+			throw new GrimpExceptionHandler(GrimpError.SE, e);
+		} catch (ParseException e) {
+			throw new GrimpExceptionHandler(GrimpError.PE, e);
 		} 
 			
 		return grimpRst;
@@ -286,9 +291,7 @@ public class Grimp extends GrimpUtil {
 				map.put("hidden", grider.hidden());
 				map.put("align", grider.align());
 				map.put("width", grider.width());
-				
-				if(grider.sort().equals(Sort.none)) map.put("sortable", false); 
-				else map.put("sortable", grider.sort());
+				map.put("sortable", grider.sort()); 
 				
 				if(!grider.format().equals(Format.function)) 
 					if(!grider.format().equals(Format.text) && !grider.format().equals(Format.customCheckbox))
@@ -296,7 +299,7 @@ public class Grimp extends GrimpUtil {
 							map.put("formatter", grider.format());
 							map.put("formatoptions", "{disabled:false}");
 							map.put("editoptions", "{ value:'Y:N'}");
-						}
+						} 
 				jsonList.add(map);	
 			} 
 		}
@@ -318,11 +321,12 @@ public class Grimp extends GrimpUtil {
 	 * @throws NoSuchFieldException 
 	 * @throws ClassNotFoundException 
 	 * @throws InstantiationException 
+	 * @throws ParseException 
 	 */
 	private JSONObject getJsonToGridDomain(Grivo grivo) 
-			throws IllegalArgumentException, 
+			throws  
 				   IllegalAccessException, InstantiationException, ClassNotFoundException, 
-				   NoSuchFieldException, NullPointerException { 
+				   NoSuchFieldException, NullPointerException, ParseException { 
 
 		Map<String, Object> grimpMap = new HashMap<String, Object>(); //최종 JSON 형태를 생성하는 grimpMap
 		ArrayList<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>(); //데이터 정보를 생성하는 MAP
@@ -348,15 +352,20 @@ public class Grimp extends GrimpUtil {
 					grider = fields[i].getAnnotation(Grider.class);
 					gid = fields[i].getAnnotation(Gid.class);
 					
-					if(gid != null) 
+					if(gid != null) {
 						jsonMap.put("id", getMetaDataValue(obj, fields[i].getName()));
+					}
 					
 					if(grider != null) {
 						if(!grider.format().equals(Format.function)) {
 							if(grider.format().equals(Format.customCheckbox)) {
 								cellsArr.add(getCustomCheckBox(getMetaDataValue(obj, keyVar), fields[i].getName()));
 							} else {
-								cellsArr.add(getMetaDataValue(obj, fields[i].getName()).toString());
+								if(grider.dateExp().length > 0){
+									cellsArr.add(getBuildDateTime(grider.dateExp(),getMetaDataValue(obj, fields[i].getName()).toString()));
+								} else {
+									cellsArr.add(getMetaDataValue(obj, fields[i].getName()).toString());
+								}
 							}
 						} else {
 							cellsArr.add(getFunction(obj, fields[i].getName(), null));
@@ -392,12 +401,13 @@ public class Grimp extends GrimpUtil {
 	 * @throws ClassNotFoundException 
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
+	 * @throws ParseException 
 	 * @throws JsonProcessingException 
 	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject getJsonToGridMap(Grivo grivo, Class<?> cls) 
 			throws NoSuchFieldException, InstantiationException, 
-				   IllegalAccessException, ClassNotFoundException, GrimpExceptionHandler
+				   IllegalAccessException, ClassNotFoundException, GrimpExceptionHandler, ParseException
 				   { 
 
 		Map<String, Object> grimpMap = new HashMap<String, Object>(); //최종 JSON 형태를 생성하는 grimpMap
@@ -420,15 +430,20 @@ public class Grimp extends GrimpUtil {
 					grider = fields[i].getAnnotation(Grider.class);
 					gid = fields[i].getAnnotation(Gid.class);
 					
-					if(gid != null) 
+					if(gid != null) {
 						jsonMap.put("id", thisMap.get(cnvtDmnToClmn(fields[i].getName())));
+					}
 					
 					if(grider != null) {
 						if(!grider.format().equals(Format.function)) {
 							if(grider.format().equals(Format.customCheckbox)){ 
 								cellsArr.add(getCustomCheckBox(thisMap, fields[i].getName(), keyVar));
 							} else {
-								cellsArr.add(thisMap.get(cnvtDmnToClmn(fields[i].getName())).toString());
+								if(grider.dateExp().length > 0){
+									cellsArr.add(getBuildDateTime(grider.dateExp(),thisMap.get(cnvtDmnToClmn(fields[i].getName())).toString()));
+								} else {
+									cellsArr.add(thisMap.get(cnvtDmnToClmn(fields[i].getName())).toString());
+								}
 							}
 						} else {
 							cellsArr.add(getFunction(map, fields[i].getName(), cls));
