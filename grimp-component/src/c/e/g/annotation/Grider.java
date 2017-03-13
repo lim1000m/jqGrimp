@@ -52,14 +52,14 @@ public @interface Grider {
 	Align align() default Align.center;
 
 	/**
-	 * @Method Name : display
+	 * @Method Name : hidden
 	 * @create Date : 2016. 3. 2.
 	 * @made by : "GOEDOKID"
 	 * @explain : 컬럼의 표출 여부(true,false) 
-	 * 			  default true 
+	 * 			  default false
 	 * @return : boolean
 	 */
-	boolean display() default true;
+	boolean hidden() default false;
 	
 	/**
 	 * @Method Name : format
@@ -82,7 +82,7 @@ public @interface Grider {
 	 * @return : Sort
 	 */
 	Sort sort() default Sort.none;
-
+	
 	/**
 	 * @Method Name : editor
 	 * @create Date : 2016. 3. 8.
