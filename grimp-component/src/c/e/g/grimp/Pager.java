@@ -39,6 +39,7 @@ public class Pager {
 		paging[1] = endNum;
 		paging[2] = pageCnt;
 		paging[3] = totalCnt;
+		paging[4] = pageSize;
 		
 		return paging;
 	}
@@ -73,7 +74,7 @@ public class Pager {
 		paging[1] = Integer.toString(endNum);
 		paging[2] = Integer.toString(pageCnt);
 		paging[3] = Integer.toString(totalCnt);
-		
+		paging[4] = Integer.toString(pageSize);
 		return paging;
 	}
 	
@@ -92,8 +93,8 @@ public class Pager {
 	 */
 	public static Map<String, Object> paging(Map<String, Object> map, int totalCnt) {
 		
-		int pageNo = Integer.parseInt(map.get("pageNo").toString());
-		int pageSize = Integer.parseInt(map.get("pageSize").toString());
+		int pageNo = Integer.parseInt(map.get("page").toString());
+		int pageSize = Integer.parseInt(map.get("rows").toString());
 		
 		int pageCnt = totalCnt/pageSize;
 		if(pageCnt == 0) pageCnt = 1;
