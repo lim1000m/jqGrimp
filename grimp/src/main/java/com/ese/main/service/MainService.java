@@ -1,11 +1,7 @@
 package com.ese.main.service;
 
 import java.util.ArrayList;
-
 import java.util.Map;
-
-import javax.persistence.PostLoad;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.stereotype.Service;
-
 import c.e.g.domain.Grivo;
 import c.e.g.grimp.Pager;
-
 import com.ese.domain.Dvsn;
 import com.ese.main.service.mapper.MainMapper;
 
@@ -100,54 +94,5 @@ public class MainService extends HibernateDaoSupport {
 		int count = mapper.getDvsnDomainCnt();
 		paramMap = Pager.paging(paramMap,count);
 		return new Grivo(Dvsn.class, paramMap, mapper.getDvsnDomainMap(paramMap));
-	}
-
-	/**
-	 * @Method Name : getDvsnCd
-	 * @create Date : 2016. 3. 9.
-	 * @made by : "GOEDOKID"
-	 * @explain : dvsnCd 셀렉트 박스 조회 
-	 * @param : 
-	 * @return : ArrayList<Map<String, Object>>
-	 */
-	public ArrayList<Map<String, Object>> getDvsnCd() {
-		MainMapper mapper = sqlSessionTemplate.getMapper(MainMapper.class);
-		return mapper.getDvsnCd();
-	}
-
-	/**
-	 * @Method Name : updateDvsnCd
-	 * @create Date : 2016. 3. 11.
-	 * @made by : "GOEDOKID"
-	 * @explain : 분류코드 수정 
-	 * @param : 
-	 * @return : int
-	 */
-	public int updateDvsnCd(Map<String, Object> paramMap) {
-		return sqlSessionTemplate.getMapper(MainMapper.class).updateDvsnCd(paramMap);
-	}
-	
-	/**
-	 * @Method Name : deleteDvsn
-	 * @create Date : 2016. 3. 11.
-	 * @made by : "GOEDOKID"
-	 * @explain : 분류정보 삭제 
-	 * @param : String dvsnCd
-	 * @return : int
-	 */
-	public int deleteDvsn(String dvsnCd) {
-		return sqlSessionTemplate.getMapper(MainMapper.class).deleteDvsn(dvsnCd);
-	}
-	
-	/**
-	 * @Method Name : addDvsnCd
-	 * @create Date : 2016. 3. 11.
-	 * @made by : "GOEDOKID"
-	 * @explain : 분류코드 등록 
-	 * @param : 
-	 * @return : int
-	 */
-	public int addDvsnCd(Map<String, Object> paramMap) {
-		return sqlSessionTemplate.getMapper(MainMapper.class).addDvsnCd(paramMap);
 	}
 }
