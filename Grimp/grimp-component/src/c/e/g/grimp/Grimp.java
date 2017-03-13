@@ -1,32 +1,29 @@
 package c.e.g.grimp;
 
 import java.lang.reflect.Field;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
-
 import c.e.g.annotation.Gentity;
 import c.e.g.annotation.Grider;
 import c.e.g.annotation.Grider.Format;
 import c.e.g.annotation.Grider.Sort;
-import c.e.g.annotation.config.Editor;
-import c.e.g.annotation.config.Editor.Type;
+import c.e.g.annotation.config.Gid;
 import c.e.g.domain.Grivo;
 import c.e.g.exception.GrimpExceptionHandler;
 import c.e.g.exception.GrimpExceptionHandler.GrimpError;
 import c.e.g.grimp.extend.GrimpUtil;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
- * @File Name : xGridUril.java
- * @Project Name : axgrid
+ * @File Name : GrimpUtil.java
+ * @Project Name : grimp
  * @package Name : grid.xGrid
  * @create Date : 2016. 2. 19.
  * @explain : Domain 객체의 Annotation 정보는 토대로 Grid,Tree에 적합한 Json,Xml 형태로 생성
@@ -83,7 +80,7 @@ public class Grimp extends GrimpUtil {
 		String buildStr = "";
 		
 		try {
-			buildStr = buildHeader(cls);
+			buildStr = buildHeader(cls).toString();
 		} catch (GrimpExceptionHandler e) {
 			e.printStackTrace();
 		}
@@ -103,7 +100,7 @@ public class Grimp extends GrimpUtil {
 		String buildStr = "";
 		
 		try {
-			buildStr = buildHeader(cls);
+			buildStr = buildHeader(cls).toString();
 		} catch (GrimpExceptionHandler e) {
 			e.printStackTrace();
 		}
@@ -118,11 +115,11 @@ public class Grimp extends GrimpUtil {
 	 * 			  Tree,Grid 분기 및 각각의 데이터를 JSON, XML 형태로 가져올지 설정
 	 *            데이터 형태 기본값(ExprType.GRID, DataType.JSON)
 	 * @param : Grivo grino, Class<?> cls          
-	 * @return : String
+	 * @return : JSONObject
 	 */	
-	public String buildGrimp(Grivo grivo, Class<?> cls) {
+	public JSONObject buildGrimp(Grivo grivo, Class<?> cls) {
 		
-		String buildStr = ""; 
+		JSONObject buildStr = new JSONObject(); 
 		try {
 			buildStr = buildTypeCheck(grivo, cls);
 		} catch (GrimpExceptionHandler e) {
@@ -140,14 +137,57 @@ public class Grimp extends GrimpUtil {
 	 * 			  Tree,Grid 분기 및 각각의 데이터를 JSON, XML 형태로 가져올지 설정
 	 *            데이터 형태 기본값(ExprType.GRID, DataType.JSON)
 	 * @param : Grivo grivo          
+	 * @return : JSONObject
+	 * @throws GrimpExceptionHandler 
+	 */
+	public JSONObject buildGrimp(Grivo grivo) {
+		
+		JSONObject buildStr = new JSONObject(); 
+		try {
+			buildStr = buildTypeCheck(grivo , null);
+		} catch (GrimpExceptionHandler e) {
+			e.printStackTrace();
+		}
+		return buildStr;
+	}
+	
+	/**
+	 * @Method Name : buildGrimp
+	 * @create Date : 2016. 2. 19.
+	 * @made by : "GOEDOKID"
+	 * @explain : Domain 형태를 통해 Grid 데이터를 조합할 경우
+	 * 			  Tree,Grid 분기 및 각각의 데이터를 JSON, XML 형태로 가져올지 설정
+	 *            데이터 형태 기본값(ExprType.GRID, DataType.JSON)
+	 * @param : Grivo grivo          
 	 * @return : String
 	 * @throws GrimpExceptionHandler 
 	 */
-	public String buildGrimp(Grivo grivo) {
+	public String buildGrimpToStr(Grivo grivo) {
 		
 		String buildStr = ""; 
 		try {
-			buildStr = buildTypeCheck(grivo , null);
+			buildStr = buildTypeCheck(grivo , null).toString();
+		} catch (GrimpExceptionHandler e) {
+			e.printStackTrace();
+		}
+		return buildStr;
+	}
+	
+	/**
+	 * @Method Name : buildGrimp
+	 * @create Date : 2016. 2. 19.
+	 * @made by : "GOEDOKID"
+	 * @explain : Domain 형태를 통해 Grid 데이터를 조합할 경우
+	 * 			  Tree,Grid 분기 및 각각의 데이터를 JSON, XML 형태로 가져올지 설정
+	 *            데이터 형태 기본값(ExprType.GRID, DataType.JSON)
+	 * @param : Grivo grino, Class<?> cls          
+	 * @return : String
+	 */	
+	public String buildGrimpToStr(Grivo grivo, Class<?> cls) {
+		
+		String buildStr = ""; 
+		try {
+			buildStr = buildTypeCheck(grivo, cls).toString();
 		} catch (GrimpExceptionHandler e) {
 			e.printStackTrace();
 		}
@@ -165,14 +205,14 @@ public class Grimp extends GrimpUtil {
 	 * @return : String
 	 * @throws GrimpExceptionHandler 
 	 */
-	private String buildTypeCheck(Grivo grivo, Class<?> cls) throws GrimpExceptionHandler {
+	private JSONObject buildTypeCheck(Grivo grivo, Class<?> cls) throws GrimpExceptionHandler {
 		
 		if(grivo.getPager().containsKey("exprType")) 
 			this.exprType = (ExprType) grivo.getPager().get("exprType");
 		if(grivo.getPager().containsKey("dataType"))
 			this.dataType = (DataType) grivo.getPager().get("dataType");
 		
-		String grimpRst = "";
+		JSONObject grimpRst = new JSONObject();
 		
 		try {
 			if(!grivo.getIsEmptyGrid()) {
@@ -205,8 +245,6 @@ public class Grimp extends GrimpUtil {
 			}
 			
 		
-		} catch (JsonProcessingException e) {
-			throw new GrimpExceptionHandler(GrimpError.JPE, e);
 		} catch (InstantiationException e) {
 			throw new GrimpExceptionHandler(GrimpError.CIE, e);
 		} catch (ClassNotFoundException e) {
@@ -231,76 +269,38 @@ public class Grimp extends GrimpUtil {
 	 * @return : String
 	 * @throws GrimpExceptionHandler 
 	 */
-	private String buildHeader(Class<?> cls) throws GrimpExceptionHandler {
+	private JSONArray buildHeader(Class<?> cls) throws GrimpExceptionHandler {
 		
 		Field[] fields = cls.getDeclaredFields();
 		
-		ArrayList<Map<String, Object>> jsonList = new ArrayList<Map<String, Object>>();
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonResult = "";
+		JSONArray jsonList = new JSONArray();
 		
 		Gentity gentity = cls.getAnnotation(Gentity.class);
 		
-		try {
-		
-			for (int i = 0; i < fields.length; i++) {
-				Grider grider = fields[i].getAnnotation(Grider.class);
-				if(grider != null) {
-					Map<String, Object> map  = new HashMap<String, Object>();
-					map.put("key", fields[i].getName());
-					map.put("label", getLabelMessage(gentity, grider.label(), fields[i].getName()));
-					map.put("display", grider.display());
-					map.put("align", grider.align());
-					map.put("width", grider.width());
-					
-					if(grider.sort().equals(Sort.none)) map.put("sort", false); 
-					else map.put("sort", grider.sort());
-					
-					if(!grider.format().equals(Format.function)) 
-						if(!grider.format().equals(Format.text) && !grider.format().equals(Format.customCheckbox))
+		for (int i = 0; i < fields.length; i++) {
+			Grider grider = fields[i].getAnnotation(Grider.class);
+			if(grider != null) {
+				JSONObject map = new JSONObject();
+				map.put("label", getLabelMessage(gentity, grider.label(), fields[i].getName()));
+				map.put("name", fields[i].getName());
+				map.put("hidden", grider.hidden());
+				map.put("align", grider.align());
+				map.put("width", grider.width());
+				
+				if(grider.sort().equals(Sort.none)) map.put("sortable", false); 
+				else map.put("sortable", grider.sort());
+				
+				if(!grider.format().equals(Format.function)) 
+					if(!grider.format().equals(Format.text) && !grider.format().equals(Format.customCheckbox))
+						if(grider.format().equals(Format.checkbox)) {
 							map.put("formatter", grider.format());
-						
-					/**
-					 * 에디터 설정 영역 차후 반영 검토
-					 */
-					if(grider.editor()) {
-						String className = cls.getPackage().getName()+".function."+cls.getSimpleName();
-						Object fncCls;
-						
-						fncCls = Class.forName(className).newInstance();
-						
-						Field fncField;
-						fncField = fncCls.getClass().getDeclaredField(fields[i].getName());
-						
-						fncField.setAccessible(true);
-						String[] updateWith = fncField.getAnnotation(Editor.class).updateWith();
-						Type typeEnum = fncField.getAnnotation(Editor.class).type();
-						
-						if(updateWith[0].equals("")) 
-							updateWith[0] = fields[i].getName();
-						
-						Map<String, Object> editorFnc = new HashMap<String, Object>();
-						editorFnc.put("type", typeEnum);
-						editorFnc.put("updateWith", updateWith);
-						map.put("editor", editorFnc);
-					}
-					jsonList.add(map);	
-				} 
-			}
-			
-			jsonResult = mapper.writeValueAsString(jsonList);
-		} catch (JsonProcessingException e) {
-			throw new GrimpExceptionHandler(GrimpError.JPE, e);
-		} catch (InstantiationException e) {
-			throw new GrimpExceptionHandler(GrimpError.CIE, e);
-		} catch (IllegalAccessException e) {
-			throw new GrimpExceptionHandler(GrimpError.IAE, e);
-		} catch (ClassNotFoundException e) {
-			throw new GrimpExceptionHandler(GrimpError.CNFE, e);
-		} catch (NoSuchFieldException e) {
-			throw new GrimpExceptionHandler(GrimpError.NSFE, e);
+							map.put("formatoptions", "{disabled:false}");
+							map.put("editoptions", "{ value:'Y:N'}");
+						}
+				jsonList.add(map);	
+			} 
 		}
-		return jsonResult;
+		return jsonList;
 	}
 	
 	/**
@@ -319,16 +319,15 @@ public class Grimp extends GrimpUtil {
 	 * @throws ClassNotFoundException 
 	 * @throws InstantiationException 
 	 */
-	private String getJsonToGridDomain(Grivo grivo) 
-			throws JsonProcessingException, IllegalArgumentException, 
+	private JSONObject getJsonToGridDomain(Grivo grivo) 
+			throws IllegalArgumentException, 
 				   IllegalAccessException, InstantiationException, ClassNotFoundException, 
 				   NoSuchFieldException, NullPointerException { 
 
 		Map<String, Object> grimpMap = new HashMap<String, Object>(); //최종 JSON 형태를 생성하는 grimpMap
 		ArrayList<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>(); //데이터 정보를 생성하는 MAP
-		Map<String, Integer> pageMap = new HashMap<String, Integer>(); //페이지 정보를 생성하는 MAP
 		Grider grider = null; //Grider Annotation vo 정의
-		String mapperJson = ""; //최종 JSON 리턴
+		Gid gid = null; //Grider Annotation vo 정의
 		
 		ArrayList<?> grivoList = grivo.getGridList(); //데이터(VO), 페이징 정보
 		Map<String, Object> grivoPager = grivo.getPager(); //grivo에서 페이징 정보 획득
@@ -343,38 +342,41 @@ public class Grimp extends GrimpUtil {
 			for (Object obj :  grivoList) { 
 				
 				Map<String, Object> jsonMap  = new HashMap<String, Object>();
+				ArrayList<String> cellsArr = new ArrayList<String>();
 				
 				for (int i = 0; i < fields.length; i++) {
 					grider = fields[i].getAnnotation(Grider.class);
+					gid = fields[i].getAnnotation(Gid.class);
+					
+					if(gid != null) 
+						jsonMap.put("id", getMetaDataValue(obj, fields[i].getName()));
+					
 					if(grider != null) {
 						if(!grider.format().equals(Format.function)) {
 							if(grider.format().equals(Format.customCheckbox)) {
-								jsonMap.put(fields[i].getName(), getCustomCheckBox(getMetaDataValue(obj, keyVar), fields[i].getName()));		
+								cellsArr.add(getCustomCheckBox(getMetaDataValue(obj, keyVar), fields[i].getName()));
 							} else {
-								jsonMap.put(fields[i].getName(), getMetaDataValue(obj, fields[i].getName()));
+								cellsArr.add(getMetaDataValue(obj, fields[i].getName()).toString());
 							}
 						} else {
-							jsonMap.put(fields[i].getName(), getFunction(obj, fields[i].getName(), null));
+							cellsArr.add(getFunction(obj, fields[i].getName(), null));
 						}
 					}
 				}
+				jsonMap.put("cell", cellsArr);
 				dataList.add(jsonMap);
 			}
 		}
 		
-		pageMap.put("pageNo", Integer.parseInt(grivoPager.get("pageNo").toString())); //현재 페이지
-		pageMap.put("pageCount", Integer.parseInt(grivoPager.get("pageCnt").toString())); //페이지 개수
-		pageMap.put("listCount", Integer.parseInt(grivoPager.get("totalCnt").toString())); //페이지 사이즈
+		grimpMap.put("page", Integer.parseInt(grivoPager.get("page").toString())); //현재 페이지
+		grimpMap.put("total", Integer.parseInt(grivoPager.get("pageCnt").toString())); //페이지 개수
+		grimpMap.put("records", Integer.parseInt(grivoPager.get("totalCnt").toString())); //총 레코드 수
+		grimpMap.put("rows", dataList);
+
+		JSONObject grimpResult = new JSONObject();
+		grimpResult.putAll(grimpMap);
 		
-		grimpMap.put("list", dataList);
-		grimpMap.put("page", pageMap);
-		
-		ObjectMapper mapper = new ObjectMapper();
-	
-		mapperJson = mapper.writeValueAsString(grimpMap);
-			
-		
-		return mapperJson;
+		return grimpResult;
 	}
 	
 	/**
@@ -393,16 +395,15 @@ public class Grimp extends GrimpUtil {
 	 * @throws JsonProcessingException 
 	 */
 	@SuppressWarnings("unchecked")
-	private String getJsonToGridMap(Grivo grivo, Class<?> cls) 
+	private JSONObject getJsonToGridMap(Grivo grivo, Class<?> cls) 
 			throws NoSuchFieldException, InstantiationException, 
-				   IllegalAccessException, ClassNotFoundException, GrimpExceptionHandler, 
-				   JsonProcessingException { 
+				   IllegalAccessException, ClassNotFoundException, GrimpExceptionHandler
+				   { 
 
 		Map<String, Object> grimpMap = new HashMap<String, Object>(); //최종 JSON 형태를 생성하는 grimpMap
 		ArrayList<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>(); //데이터 정보를 생성하는 MAP
-		Map<String, Integer> pageMap = new HashMap<String, Integer>(); //페이지 정보를 생성하는 MAP
 		Grider grider = null; //Grider Annotation vo 정의
-		String mapperJson = ""; //최종 JSON 리턴
+		Gid gid = null; //Grider Annotation vo 정의
 		
 		ArrayList<?> grivoList = grivo.getGridList(); //데이터(VO), 페이징 정보
 		Map<String, Object> grivoPager = grivo.getPager(); //grivo에서 페이징 정보 획득
@@ -411,36 +412,43 @@ public class Grimp extends GrimpUtil {
 			String keyVar = getGrimpGid(cls);
 			for (Object  map :  grivoList) { 
 				Map<String, Object> jsonMap  = new HashMap<String, Object>();
+				ArrayList<String> cellsArr = new ArrayList<String>();
+				
 				Map<String, Object> thisMap = (Map<String, Object>) map;
 				Field[] fields = cls.getDeclaredFields();
 				for (int i = 0; i < fields.length; i++) {
 					grider = fields[i].getAnnotation(Grider.class);
+					gid = fields[i].getAnnotation(Gid.class);
+					
+					if(gid != null) 
+						jsonMap.put("id", thisMap.get(cnvtDmnToClmn(fields[i].getName())));
+					
 					if(grider != null) {
 						if(!grider.format().equals(Format.function)) {
-							if(grider.format().equals(Format.customCheckbox)) 
-								jsonMap.put(fields[i].getName(), getCustomCheckBox(thisMap, fields[i].getName(), keyVar));
-							else
-								jsonMap.put(fields[i].getName(), thisMap.get(cnvtDmnToClmn(fields[i].getName())));	
+							if(grider.format().equals(Format.customCheckbox)){ 
+								cellsArr.add(getCustomCheckBox(thisMap, fields[i].getName(), keyVar));
+							} else {
+								cellsArr.add(thisMap.get(cnvtDmnToClmn(fields[i].getName())).toString());
+							}
 						} else {
-							jsonMap.put(fields[i].getName(), getFunction(map, fields[i].getName(), cls));
+							cellsArr.add(getFunction(map, fields[i].getName(), cls));
 						}
 					}
 				}
+				jsonMap.put("cell", cellsArr);
 				dataList.add(jsonMap);
 			}
 		}
 		
-		pageMap.put("pageNo", Integer.parseInt(grivoPager.get("pageNo").toString())); //현재 페이지
-		pageMap.put("pageCount", Integer.parseInt(grivoPager.get("pageCnt").toString())); //페이지 개수
-		pageMap.put("listCount", Integer.parseInt(grivoPager.get("totalCnt").toString())); //페이지 사이즈
+		grimpMap.put("rows", dataList);
+		grimpMap.put("page", Integer.parseInt(grivoPager.get("page").toString())); //현재 페이지
+		grimpMap.put("total", Integer.parseInt(grivoPager.get("pageCnt").toString())); //페이지 개수
+		grimpMap.put("records", Integer.parseInt(grivoPager.get("totalCnt").toString())); //총 레코드 수
 		
-		grimpMap.put("list", dataList);
-		grimpMap.put("page", pageMap);
+		JSONObject grimpResult = new JSONObject();
+		grimpResult.putAll(grimpMap);
 		
-		ObjectMapper mapper = new ObjectMapper();
-		mapperJson = mapper.writeValueAsString(grimpMap);
-			
-		return mapperJson;
+		return grimpResult;
 	}
 	
 	/**
@@ -451,8 +459,8 @@ public class Grimp extends GrimpUtil {
 	 * @param : ArrayList<Object> clsList 
 	 * @return : String
 	 */
-	private String getXmlToGrid(Grivo grivo) {
-		return "";
+	private JSONObject getXmlToGrid(Grivo grivo) {
+		return new JSONObject();
 	}
 
 	/**
@@ -460,12 +468,12 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 2. 23.
 	 * @made by : "GOEDOKID"
 	 * @explain : XML 형태로 TREE에 표출
-	 * @param : ArrayList<Object> clsList
-	 * @return : String
+	 * @param : Grivo grivo
+	 * @return : JSONObject
 	 */
 	@Deprecated
-	private String getXmlToTree(Grivo grivo) {
-		return "";
+	private JSONObject getXmlToTree(Grivo grivo) {
+		return new JSONObject();
 	}
 
 	/**
@@ -473,47 +481,12 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 2. 23.
 	 * @made by : "GOEDOKID"
 	 * @explain : JSON 형태로 TREE에 표출 
-	 * @param : ArrayList<Object> clsList
-	 * @return : void
+	 * @param : Grivo grivo)
+	 * @return : JSONObject
 	 */
 	@Deprecated
-	private String getJsonToTree(Grivo grivo) {
-		return "";
-	}
-	
-	/**
-	 * @Method Name : buildSelectString
-	 * @create Date : 2016. 3. 9.
-	 * @made by : "GOEDOKID"
-	 * @explain : Select Box 조회시 AxisJ에 알맞는 SelectBox json을 리턴한다.
-	 * @param : ArrayList<Map<String, Object>> selStr (key, value)
-	 * @return : String
-	 */
-	public String buildSelectString(ArrayList<Map<String, Object>> selStr) {
-		
-		Map<String, Object> mainStr = new HashMap<String, Object>();
-		ArrayList<Map<String, Object>> listStr = new ArrayList<Map<String, Object>>();
-		String returnStr = "";
-		if(selStr.size() > 0) {
-			mainStr.put("result", "ok");
-			for(Map<String, Object> str : selStr) {
-				Map<String, Object> cntnMap = new HashMap<String, Object>();
-				cntnMap.put("optionValue", str.get("key"));
-				cntnMap.put("optionText", str.get("value"));
-				listStr.add(cntnMap);
-			}
-			mainStr.put("options", listStr);
-			mainStr.put("etcs", "");
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		try {
-			returnStr = mapper.writeValueAsString(mainStr);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		return returnStr;
+	private JSONObject getJsonToTree(Grivo grivo) {
+		return new JSONObject();
 	}
 	
 	/**
@@ -524,23 +497,18 @@ public class Grimp extends GrimpUtil {
 	 * @param : 
 	 * @return : String
 	 */
-	private String getEmptyJson() throws GrimpExceptionHandler  {
+	private JSONObject getEmptyJson() throws GrimpExceptionHandler  {
 		Map<String, Object> grimpMap = new HashMap<String, Object>(); //최종 JSON 형태를 생성하는 grimpMap
 		ArrayList<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>(); //데이터 정보를 생성하는 MAP
 		Map<String, Integer> pageMap = new HashMap<String, Integer>(); //페이지 정보를 생성하는 MAP
-		String mapperJson = ""; //최종 JSON 리턴
-		pageMap.put("pageNo", 1); 
-		pageMap.put("pageCount", 0); 
-		pageMap.put("listCount", 0); 
-		grimpMap.put("list", dataList);
+		pageMap.put("page", 1); 
+		pageMap.put("records", 0); 
+		pageMap.put("total", 0); 
+		grimpMap.put("rows", dataList);
 		grimpMap.put("page", pageMap);
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapperJson = mapper.writeValueAsString(grimpMap);
-		} catch (JsonProcessingException e) {
-			throw new GrimpExceptionHandler(GrimpError.JPE, e);
-		}
-		return mapperJson;
+		JSONObject mapper = new JSONObject();
+		mapper.putAll(grimpMap);
+		return mapper;
 	}
 	
 	/**
@@ -548,12 +516,11 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 3. 25.
 	 * @made by : "GOEDOKID"
 	 * @explain : 빈 Grid를 최초에 호출해야 할 필요가 있을때 XML 형태의 빈 데이터를 리턴한다.
-	 * @param : String
-	 * @return : String
+	 * @return : JSONObject
 	 */
 	@Deprecated
-	private String getEmptyXml() {
-		return "";
+	private JSONObject getEmptyXml() {
+		return new JSONObject();
 	}
 	
 	/**
@@ -561,12 +528,11 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 3. 25.
 	 * @made by : "GOEDOKID"
 	 * @explain : 빈 Tree를 최초에 호출해야 할 필요가 있을때 XML 형태의 빈 데이터를 리턴한다.
-	 * @param : String
-	 * @return : String
+	 * @return : JSONObject
 	 */
 	@Deprecated
-	private String getEmptyTreeXml() {
-		return "";
+	private JSONObject getEmptyTreeXml() {
+		return new JSONObject();
 	}
 	
 	/**
@@ -574,11 +540,10 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 3. 25.
 	 * @made by : "GOEDOKID"
 	 * @explain : 빈 Tree를 최초에 호출해야 할 필요가 있을때 XML 형태의 빈 데이터를 리턴한다.
-	 * @param : String
-	 * @return : String
+	 * @return : JSONObject
 	 */
 	@Deprecated
-	private String getEmptyTreeJson() {
-		return "";
+	private JSONObject getEmptyTreeJson() {
+		return new JSONObject();
 	}
 }

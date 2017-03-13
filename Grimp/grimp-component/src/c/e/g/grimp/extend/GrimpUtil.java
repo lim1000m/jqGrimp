@@ -287,5 +287,4 @@ public class GrimpUtil {
 		
 		return this.message.getMessage(labelStr, new String[]{}, labelStr, locale);
 	}
-	
 }
