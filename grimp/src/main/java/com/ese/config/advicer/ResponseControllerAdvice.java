@@ -13,6 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import c.e.g.domain.Grivo;
 import c.e.g.grimp.Grimp;
+import net.sf.json.JSONObject;
 
 /**
  * @File Name : ResponseControllerAdvice.java
@@ -48,7 +49,7 @@ public class ResponseControllerAdvice implements ResponseBodyAdvice<Object> {
      * 3. Grivo 의 getGridCls의 여부에 따라 함수호출
      */
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
+    public JSONObject beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
             Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
             ServerHttpResponse response) {
 
@@ -56,10 +57,14 @@ public class ResponseControllerAdvice implements ResponseBodyAdvice<Object> {
     			grimp = new Grimp(was);
     			
     		Grivo grivo = (Grivo) body;
-    	
+    		
+    		JSONObject obj = new JSONObject();
+    		
     		if(grivo.getGridCls() != null)
-    			return grimp.buildGrimp(grivo, grivo.getGridCls());
+    			obj = grimp.buildGrimp(grivo, grivo.getGridCls());
     		else
-    			return grimp.buildGrimp(grivo);
+    			obj = grimp.buildGrimp(grivo);
+    		
+    		return obj;
     }
 }
