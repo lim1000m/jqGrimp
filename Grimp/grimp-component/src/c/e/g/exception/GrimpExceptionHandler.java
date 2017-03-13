@@ -1,4 +1,5 @@
 package c.e.g.exception;
+
 import java.util.logging.Logger;
 
 /**
@@ -16,7 +17,7 @@ public class GrimpExceptionHandler extends Exception{
 
 	private static final Logger logger = Logger.getLogger(GrimpExceptionHandler.class.getName());
 	
-	public enum GrimpError {CIE, CNFE, FNPE, IAE, NPE, NSFE, JPE, NSFEV}
+	public enum GrimpError {CIE, CNFE, FNPE, IAE, NPE, NSFE, JPE, NSFEV, IARE, SE, PE}
 	
 	public GrimpExceptionHandler() {
 		super("Error occurred while grimp axis grid assembler working!!");
@@ -26,36 +27,29 @@ public class GrimpExceptionHandler extends Exception{
 		
 		super("Error occurred while grimp axis grid assembler working!!");
 		
+		StackTraceElement[] ste = e.getStackTrace();
+		
+		logger.warning("[GRIMP ERROR INFO] "+ste[0].getClassName()+"."+ste[0].getMethodName()+"."+ste[0].getLineNumber());
+		
 		if(ge.equals(GrimpError.NPE)) {
 			logger.warning("Annotation setting not exist.");
 			logger.warning("Reason : Did you really define the annotation in class in function package ?");
-			logger.warning(e.getMessage());
-			e.printStackTrace();
 		} else if(ge.equals(GrimpError.NSFE)) {
 			logger.warning("Target field is not exist.");
 			logger.warning("Reason : Cannot find the target field the class in Function package.");
-			e.printStackTrace();
 		} else if(ge.equals(GrimpError.CNFE)) {
 			logger.warning("Could not find Class in function Package or Failed to instance the class.");
 			logger.warning("Reason : Check it out Class in Function package is exist and same class name with you choose.");
-			logger.warning(e.getMessage());
-			e.printStackTrace();	
 		} else if(ge.equals(GrimpError.FNPE)) {
 			logger.warning("Annotation setting not exist.");
 			logger.warning("Reason : Did you really define the annotation in class in function package ?");
-			logger.warning(e.getMessage());
-			e.printStackTrace();
 		} else if (ge.equals(GrimpError.CIE)) {
 			logger.warning("Could not find Class in function Package or Failed to instance the class.");
 			logger.warning("Reason : Check it out Class in Function package is exist and same class name with you choose.");
-			logger.warning(e.getMessage());
-			e.printStackTrace();	
 		} else if(ge.equals(GrimpError.IAE)) {
 			logger.warning("Not Well form Annotation and Definition variable.");
-			logger.warning(e.getMessage());
-			e.printStackTrace();	
-		} else if(ge.equals(GrimpError.JPE)) {
-			e.printStackTrace();	
+		} else if(ge.equals(GrimpError.PE)) {
+			logger.warning("Error occured while converting String to date. Check Date Exp is Valid.");
 		}
 	}
 }

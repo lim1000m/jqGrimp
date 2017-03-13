@@ -1,6 +1,9 @@
 package c.e.g.grimp.extend;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -287,4 +290,29 @@ public class GrimpUtil {
 		
 		return this.message.getMessage(labelStr, new String[]{}, labelStr, locale);
 	}
+	
+	/**
+	 * @Method Name : getBuildDateTime
+	 * @create Date : 2017. 3. 13.
+	 * @made by : "GOEDOKID"
+	 * @explain : 날짜일 경우 Grider의 dateExp 항목에 셋팅되는 값을 통해 Date를 생성하여 포맷을 변경하는 함수
+	 * @param : String beforeExp, String afterExp, String dateTime
+	 * @return : String
+	 */
+	protected String getBuildDateTime(String[] Exp, String dateTime) throws ParseException {
+
+		String refixDate = "";
+		
+		if(Exp.length > 0 && !dateTime.isEmpty()) {
+			SimpleDateFormat format = new SimpleDateFormat(Exp[0]);
+			Date date = format.parse(dateTime);
+			SimpleDateFormat format1 = new SimpleDateFormat(Exp[1]);
+			refixDate = format1.format(date);	
+		} else {
+			refixDate = dateTime;
+		}
+		
+		return refixDate;
+	}
+	
 }
