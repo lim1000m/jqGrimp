@@ -30,9 +30,9 @@ $(document).ready(function() {
 function uf_initGrid() {
 	
 	$("#gridTbl").jqGrid({
-		url : "<c:url value='/getDvsnList.do' />", //
-// 		url : "<c:url value='/grider.do' />",
-// 		url : "<c:url value='/mrider.do' />",
+		url : "<c:url value='/getDvsnList.do' />", //VO 객체를 통한 Hibernate로 조회
+// 		url : "<c:url value='/grider.do' />", //쿼리의 결과가 Domain인 경우 조회
+// 		url : "<c:url value='/mrider.do' />", //쿼리의 결과가 Map인 경우 조회
 		datatype : "json" ,
 		pager: '#jqGridPager',
 		viewrecords : true,
@@ -40,7 +40,7 @@ function uf_initGrid() {
 		width:1200,
 		height:600,
 		rowList : [5, 10],
-		sortname : 'cnslAuthNm',
+		sortname : 'dvsnCd',
 		sortorder : "asc",
 		postData : {
 	   		lang : 'kr'
