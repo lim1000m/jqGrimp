@@ -1,12 +1,10 @@
 package com.ese.domain; 
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import c.e.g.annotation.Grider;
 import c.e.g.annotation.Grider.Align;
 import c.e.g.annotation.Grider.Format;
@@ -18,7 +16,7 @@ import c.e.g.annotation.config.Gid;
  * @Project Name : grimp
  * @package Name : com.ese.domain
  * @create Date : 2016. 2. 29.
- * @explain : 도면 분류정보 목록 @Grider를 통해서 옵션 설정 
+ * @explain : Table이 매핑된 테이블의 컬럼을 @Grider를 통해서 옵션 설정 
  * @made by : "GOEDOKID"
  * @see
  * 1.0 Grid에 사용하지 않는 변수 선언만 해서 사용 가능 
@@ -30,48 +28,59 @@ import c.e.g.annotation.config.Gid;
 public class Dvsn {
 
 	@Transient
-	@Grider(label="com.ese.check",align=Align.center, sort=Sort.none,format=Format.customCheckbox,display=true, width="*")
-	private int check;
+	@Grider(label="com.ese.customCheck",align=Align.center, sort=Sort.none,format=Format.customCheckbox,hidden=false, width="10")
+	private int checkCustom;
 	
 	@Transient
-	@Grider(label="com.ese.no",align=Align.center, format=Format.checkbox)
-	private int no;	
+	@Grider(label="com.ese.check",align=Align.center, format=Format.checkbox, width="10")
+	private String check;	
+	
+	@Transient
+	@Grider(label="com.ese.no",align=Align.center,  width="10")
+	private int no;
 	
 	@Id
 	@Column(name="DVSN_CD", nullable=false, length=2)
 	@Gid
-	@Grider(label="com.ese.dsvnCd", align=Align.center)
+	@Grider(label="com.ese.dsvnCd", align=Align.center, width="20")
 	private String dvsnCd = "";
 
 	@Column(name="DVSN_NM", nullable=true, length=50)
-	@Grider(label="com.ese.dvsnNm", sort=Sort.desc)
+	@Grider(label="com.ese.dvsnNm", sort=Sort.desc, width="30")
 	private String dvsnNm = "";
 
 	@Column(name="STD_DVSN_CD", nullable=true, length=1)
-	@Grider(label="com.ese.stdDvsnCd")
+	@Grider(label="com.ese.stdDvsnCd", width="10")
 	private String stdDvsnCd = "";
 
 	@Column(name="USE_YN", nullable=true, length=1)
-	@Grider(label="com.ese.useYn")
+	@Grider(label="com.ese.useYn", width="10")
 	private String useYn = "";
 
 	@Transient
-	@Grider(label="com.ese.useOrdr", display=false)
+	@Grider(label="com.ese.useOrdr", hidden=false, width="10")
 	private int nowordr;
 	
 	@Column(name="ORDR", nullable=true, length=1)
-	@Grider(label="com.ese.ordr", format=Format.function)
+	@Grider(label="com.ese.ordr", format=Format.function, width="60")
 	private int ordr;
 	
 	@Transient
 	private String extra;
 	
-	
-	public int getCheck() {
+	public int getCheckCustom() {
+		return checkCustom;
+	}
+
+	public void setCheckCustom(int checkCustom) {
+		this.checkCustom = checkCustom;
+	}
+
+	public String getCheck() {
 		return check;
 	}
 
-	public void setCheck(int check) {
+	public void setCheck(String check) {
 		this.check = check;
 	}
 
