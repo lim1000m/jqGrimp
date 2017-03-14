@@ -201,7 +201,7 @@ public class Grimp extends GrimpUtil {
 	 * @param : Grivo grivo, Class<?> cls
 	 * 			Domain 형태일 경우 : buildTypeCheck(Grivo grivo)
 	 * 	 		Map 형태일 경우 : buildTypeCheck(Grivo grivo, Domain.class)
-	 * @return : String
+	 * @return : JSONObject
 	 * @throws GrimpExceptionHandler 
 	 */
 	private JSONObject buildTypeCheck(Grivo grivo, Class<?> cls) throws GrimpExceptionHandler {
@@ -271,7 +271,7 @@ public class Grimp extends GrimpUtil {
 	 * @made by : "GOEDOKID"
 	 * @explain : GRID 헤더 정보 생성 
 	 * @param : Class<?> cls(Annotation을 설정한 클래스)
-	 * @return : String
+	 * @return : JSONArray
 	 * @throws GrimpExceptionHandler 
 	 */
 	private JSONArray buildHeader(Class<?> cls) throws GrimpExceptionHandler {
@@ -312,7 +312,7 @@ public class Grimp extends GrimpUtil {
 	 * @made by : "GOEDOKID"
 	 * @explain : GRID 목록을 JSON 형태로 반환
 	 * @param : Grivo grivo 
-	 * @return : void
+	 * @return : JSONObject
 	 * @throws JsonProcessingException 
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
@@ -393,8 +393,8 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 2. 19.
 	 * @made by : "GOEDOKID"
 	 * @explain : GRID 목록을 JSON 형태로 반환
-	 * @param : Grivo grivo 
-	 * @return : void
+	 * @param : Grivo grivo, Class<?> cls
+	 * @return : JSONObject
 	 * @throws SecurityException 
 	 * @throws NoSuchFieldException 
 	 * @throws FieldNullPointException 
@@ -471,8 +471,8 @@ public class Grimp extends GrimpUtil {
 	 * @create Date : 2016. 2. 23.
 	 * @made by : "GOEDOKID"
 	 * @explain : GRID에 XML 형태로 데이터를 리턴
-	 * @param : ArrayList<Object> clsList 
-	 * @return : String
+	 * @param : Grivo grivo
+	 * @return : JSONObject
 	 */
 	private JSONObject getXmlToGrid(Grivo grivo) {
 		return new JSONObject();
@@ -510,7 +510,7 @@ public class Grimp extends GrimpUtil {
 	 * @made by : "GOEDOKID"
 	 * @explain : 최초나 어떤 이유에 의해서 빈 Grid를 보여줘야 할 필요가 있을 경우 JSON 형태의 빈 데이터를 리턴한다.
 	 * @param : 
-	 * @return : String
+	 * @return : JSONObject
 	 */
 	private JSONObject getEmptyJson() throws GrimpExceptionHandler  {
 		Map<String, Object> grimpMap = new HashMap<String, Object>(); //최종 JSON 형태를 생성하는 grimpMap

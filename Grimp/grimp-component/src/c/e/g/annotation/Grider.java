@@ -92,9 +92,9 @@ public @interface Grider {
 	 * @create Date : 2017. 3. 13.
 	 * @made by : "GOEDOKID"
 	 * @explain :  입력된 데이터 포맷 형태로 변환
-	 * 			  default ""
+	 * 			  default {}
 	 * @param : 
-	 * @return : String
+	 * @return : String[]
 	 */
 	String[] dateExp() default {}; 
 	
