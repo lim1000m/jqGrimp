@@ -192,9 +192,10 @@ public class DispatcherConfig  extends WebMvcConfigurerAdapter{
 	 * @return : Grimp
 	 */
 	@Bean
-	@Autowired
 	public Grimp grimp() {
 		return new Grimp();
+//		return new Grimp(messageSource());
+//		return new Grimp(was);
 	}
 	
 	/**
