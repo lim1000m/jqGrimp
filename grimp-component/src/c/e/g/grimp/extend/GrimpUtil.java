@@ -45,9 +45,8 @@ public class GrimpUtil {
 	 * @param : Object obj(값을 조회할 클래스), String fieldName(값을 조회할 변수명)
 	 * @return : Object
 	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
 	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * @throws IllegalArgumentException
 	 */
 	protected Object getMetaDataValue(Object obj, String fieldName) 
 			throws SecurityException, IllegalArgumentException, IllegalAccessException { 
@@ -119,7 +118,7 @@ public class GrimpUtil {
 	 * @create Date : 2016. 3. 4.
 	 * @made by : "GOEDOKID"
 	 * @explain : goeDoKid 형태의 DB 컬럼을 goe_do_kid  형태로 변경
-	 * @param : String value
+	 * @param : String name
 	 * @return : String
 	 */
 	protected String cnvtDmnToClmn(String name){
@@ -146,7 +145,7 @@ public class GrimpUtil {
 	 * @explain : 도메인의 변수 속성이 Format의 function일 경우 
 	 * 			    동일 레벨의 function 패키지의 동일한 클래스명의 생성된 클래스에서 해당 변수와 같은 이름으로 
 	 * 			    선언된 변수를 찾아 어노테이션 정보 및 변수 정보를 조회    
-	 * @param : 
+	 * @param : Object obj, String fieldName, Class<?>  mainCls
 	 * @return : String
 	 * @throws ClassNotFoundException 
 	 * @throws IllegalAccessException 
@@ -247,7 +246,7 @@ public class GrimpUtil {
 	 * @create Date : 2016. 3. 15.
 	 * @made by : "GOEDOKID"
 	 * @explain : CheckBox 구성시 Domain 객체에 설정된 유니크한 키로 정보로 사용할 KEY 변수를 조회한다.
-	 * @param : 
+	 * @param : Class<?> cls
 	 * @return : String
 	 */
 	protected String getGrimpGid(Class<?> cls) {
@@ -283,10 +282,11 @@ public class GrimpUtil {
 			suffix = "."+gentity.msgSuffix();	
 		}
 		
-		if(!label.isEmpty()) 
+		if(!label.isEmpty()) {
 			labelStr = prefix+label+suffix;
-		else
+		}else{
 			labelStr = prefix+fieldName+suffix;
+		}
 		
 		return this.message.getMessage(labelStr, new String[]{}, labelStr, locale);
 	}
@@ -296,7 +296,7 @@ public class GrimpUtil {
 	 * @create Date : 2017. 3. 13.
 	 * @made by : "GOEDOKID"
 	 * @explain : 날짜일 경우 Grider의 dateExp 항목에 셋팅되는 값을 통해 Date를 생성하여 포맷을 변경하는 함수
-	 * @param : String beforeExp, String afterExp, String dateTime
+	 * @param : String[] Exp, String dateTime
 	 * @return : String
 	 */
 	protected String getBuildDateTime(String[] Exp, String dateTime) throws ParseException {
